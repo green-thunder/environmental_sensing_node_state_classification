@@ -6,4 +6,4 @@ env/
 data/
 artifacts/
 *.zip
-
+.ipynb_checkpoints/

@@ -1,0 +1,6 @@
+-r requirements.txt
+catboost>=1.2.5
+optuna>=3.6
+tqdm>=4.66
+jupyterlab>=4.1
+ipykernel>=6.29

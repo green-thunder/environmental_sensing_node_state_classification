@@ -96,6 +96,12 @@ def build_features(
             continue
         x[c] = pd.to_numeric(x[c], errors="coerce").astype(np.float32)
 
+    # Missingness indicators (often helpful for thresholdy/tabular tasks).
+    for c in list(x.columns):
+        if c in cat_features:
+            continue
+        x[f"isna_{c}"] = x[c].isna().astype(np.int8)
+
     for c in cat_features:
         x[c] = pd.to_numeric(x[c], errors="coerce").astype("Int64").astype("category")
 

@@ -3,12 +3,6 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
-
-from essn.features import build_features
-from essn.serialization import load_json
-
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
@@ -20,6 +14,13 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+
+    import numpy as np
+    import pandas as pd
+
+    from essn.features import build_features
+    from essn.serialization import load_json
+
     meta = load_json(args.artifacts_dir / "meta.json")
 
     test_path = args.data_dir / "test.csv"
@@ -42,6 +43,13 @@ def main() -> None:
         for fold in range(n_splits):
             booster = lgb.Booster(model_file=str(args.artifacts_dir / f"lgbm_fold{fold}.txt"))
             proba += booster.predict(x_test) / n_splits
+    elif meta["model"] == "catboost":
+        from catboost import CatBoostClassifier
+
+        for fold in range(n_splits):
+            model = CatBoostClassifier()
+            model.load_model(str(args.artifacts_dir / f"cb_fold{fold}.cbm"))
+            proba += model.predict_proba(x_test) / n_splits
     else:
         from joblib import load
 
